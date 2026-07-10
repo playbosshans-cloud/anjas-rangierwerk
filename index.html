@@ -4,7 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <meta name="theme-color" content="#07131b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Anjas Rangierwerk">
   <meta name="description" content="ANJAS RANGIERWERK – das schnelle Farb-Sortierspiel mit zwei bis fünf Zügen.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./app-icon-192.png">
   <title>ANJAS RANGIERWERK – für Anja</title>
   <style>
     :root {
@@ -338,6 +345,35 @@
     .primary-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
     .primary-btn:active { transform: translateY(0) scale(.98); }
 
+    .secondary-btn {
+      display: block;
+      min-width: 220px;
+      margin: 10px auto 0;
+      padding: 11px 18px;
+      border: 1px solid rgba(255, 200, 64, .34);
+      border-radius: 11px;
+      background: rgba(255, 200, 64, .055);
+      color: #f5d985;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .secondary-btn:hover { border-color: var(--amber); background: rgba(255, 200, 64, .11); }
+    .secondary-btn[hidden] { display: none; }
+
+    .install-note {
+      max-width: 410px;
+      min-height: 0;
+      margin: 10px auto 0;
+      color: #aebbc0;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+    .install-note:empty { display: none; }
+
     .best {
       min-height: 20px;
       margin-top: 15px;
@@ -479,6 +515,8 @@
             <div class="control-chip"><b>Tasten 1–5</b>Gleis sofort wählen</div>
           </div>
           <button class="primary-btn" id="startBtn" type="button">Werk starten</button>
+          <button class="secondary-btn" id="installBtn" type="button">Als App installieren</button>
+          <div class="install-note" id="installNote" aria-live="polite"></div>
           <div class="best" id="bestText"></div>
         </div>
       </div>
@@ -500,6 +538,8 @@
     const app = document.getElementById('app');
     const overlay = document.getElementById('overlay');
     const startBtn = document.getElementById('startBtn');
+    const installBtn = document.getElementById('installBtn');
+    const installNote = document.getElementById('installNote');
     const pauseBtn = document.getElementById('pauseBtn');
     const soundBtn = document.getElementById('soundBtn');
     const fullBtn = document.getElementById('fullBtn');
@@ -537,6 +577,7 @@
     let muted = false;
     let pointerStart = null;
     let bannerTimer = 0;
+    let installPrompt = null;
 
     const state = {
       mode: 'intro',
@@ -637,6 +678,14 @@
         if (AudioCtx) audio = new AudioCtx();
       }
       if (audio && audio.state === 'suspended') audio.resume();
+    }
+
+    function isStandalone() {
+      return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    function updateInstallButton() {
+      installBtn.hidden = isStandalone();
     }
 
     function tone(freq, duration, type = 'sine', volume = .06, delay = 0) {
@@ -1185,6 +1234,33 @@
       else startGame();
     });
 
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      installPrompt = event;
+      installBtn.hidden = false;
+      installNote.textContent = '';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (installPrompt) {
+        installPrompt.prompt();
+        const choice = await installPrompt.userChoice;
+        if (choice.outcome === 'accepted') installBtn.hidden = true;
+        installPrompt = null;
+        return;
+      }
+
+      const isiPhone = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      installNote.textContent = isiPhone
+        ? 'Auf dem iPhone: unten auf Teilen tippen und „Zum Home-Bildschirm“ wählen. Danach startet das Spiel ohne Browserleisten.'
+        : 'Im Browser-Menü „App installieren“ oder „Zum Startbildschirm hinzufügen“ wählen.';
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBtn.hidden = true;
+      installNote.textContent = 'Installiert – Anjas Rangierwerk liegt jetzt auf dem Home-Bildschirm.';
+    });
+
     pauseBtn.addEventListener('click', () => {
       if (state.mode === 'running') pauseGame();
       else if (state.mode === 'paused') resumeGame();
@@ -1248,9 +1324,16 @@
 
     window.addEventListener('resize', resize);
     bestText.innerHTML = state.high ? `Bestwert <b>${formatNumber(state.high)}</b>` : 'Dein erster Lauf setzt den Bestwert';
+    updateInstallButton();
     resetGame();
     resize();
     requestAnimationFrame(frame);
+
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
   })();
   </script>
 </body>
