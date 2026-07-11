@@ -71,7 +71,7 @@
     <section class="card">
       <p class="count" id="count">FRAGE 01</p><h1 id="question"></h1><p class="hint" id="hint"></p>
       <div id="input"></div>
-      <div class="actions"><button class="back" id="back" disabled>Zurück</button><button class="primary" id="next" disabled>Weiter</button></div>
+      <div class="actions"><button class="back" id="back">Startseite</button><button class="primary" id="next" disabled>Weiter</button></div>
     </section>
   </main>
 
@@ -102,20 +102,22 @@
       {id:'role',title:'Deine mögliche Rolle bei Hansi’s World / 3D-Druck',hint:'Mehrere Antworten möglich',type:'multi',options:['Ideen geben','Prototypen testen','Farben und Aussehen wählen','Ehrlich sagen, was nicht funktioniert','Gemeinsam etwas entwickeln','Nur Spaß daran haben']},
       {id:'note',title:'Was sollen wir unbedingt beachten?',hint:'Optional: Wunsch, No-Go oder etwas ganz anderes.',type:'text'}
     ];
-    let step=0; const answers={};
+    let step=0; let answers={};
+    try{const stored=JSON.parse(localStorage.getItem('anjasDruckProfil')||'null');if(stored&&typeof stored==='object')answers=stored}catch(_){}
     const $=id=>document.getElementById(id);
+    function persist(){try{localStorage.setItem('anjasDruckProfil',JSON.stringify(answers))}catch(_){}}
     function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));window.scrollTo(0,0);if(id==='profile')render();if(id==='game'&&!$('game-frame').src)$('game-frame').src='../';}
     document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
-    function choose(value){const q=questions[step],old=answers[q.id]||[];answers[q.id]=q.type==='multi'?(old.includes(value)?old.filter(v=>v!==value):[...old,value]):[value];render();}
+    function choose(value){const q=questions[step],old=answers[q.id]||[];answers[q.id]=q.type==='multi'?(old.includes(value)?old.filter(v=>v!==value):[...old,value]):[value];persist();render();}
     function render(){
       const q=questions[step],selected=answers[q.id]||[],n=String(step+1).padStart(2,'0');
       $('step-label').textContent=`DRUCK-PROFIL · ${n}/${questions.length}`;$('count').textContent=`FRAGE ${n}`;$('question').textContent=q.title;$('hint').textContent=q.hint||'';$('hint').style.display=q.hint?'block':'none';$('bar').style.width=`${((step+1)/questions.length)*100}%`;
       const box=$('input');box.innerHTML='';
-      if(q.type==='text'){const t=document.createElement('textarea');t.rows=5;t.placeholder='Hier kurz eintippen …';t.value=selected[0]||'';t.addEventListener('input',()=>answers[q.id]=[t.value]);box.appendChild(t);}
+      if(q.type==='text'){const t=document.createElement('textarea');t.rows=5;t.placeholder='Hier kurz eintippen …';t.value=selected[0]||'';t.addEventListener('input',()=>{answers[q.id]=[t.value];persist()});box.appendChild(t);}
       else{const list=document.createElement('div');list.className='options';q.options.forEach(value=>{const active=selected.includes(value),b=document.createElement('button');b.className='option'+(active?' active':'');b.type='button';const m=document.createElement('span');m.className='option-mark';m.textContent=active?'✓':q.type==='multi'?'+':'';const s=document.createElement('span');s.textContent=value;b.append(m,s);b.addEventListener('click',()=>choose(value));list.appendChild(b)});box.appendChild(list)}
-      $('back').disabled=step===0;$('next').disabled=q.type!=='text'&&selected.length===0;$('next').textContent=step===questions.length-1?'Profil fertigstellen':'Weiter';
+      $('back').textContent=step===0?'Startseite':'Zurück';$('next').disabled=q.type!=='text'&&selected.length===0;$('next').textContent=step===questions.length-1?'Profil fertigstellen':'Weiter';
     }
-    $('back').addEventListener('click',()=>{if(step>0){step--;render();window.scrollTo(0,0)}});
+    $('back').addEventListener('click',()=>{if(step===0)show('home');else{step--;render();window.scrollTo(0,0)}});
     $('next').addEventListener('click',()=>{if(step===questions.length-1)finish();else{step++;render();window.scrollTo(0,0)}});
     function makeSummary(){return `ANJAS DRUCK-PROFIL\nHansi’s World · Werkstatt 01\n\n${questions.map((q,i)=>`${i+1}. ${q.title}\n${(answers[q.id]||[]).filter(Boolean).join(', ')||'Noch offen'}`).join('\n\n')}`;}
     function finish(){const summary=makeSummary();$('summary').textContent=summary;$('whatsapp').href=`https://wa.me/?text=${encodeURIComponent(summary)}`;show('result')}
