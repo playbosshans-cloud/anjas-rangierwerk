@@ -1,4 +1,4 @@
-const CACHE = 'anjas-rangierwerk-v2';
+const CACHE = 'anjas-rangierwerk-v3';
 const ASSETS = [
   './',
   './index.html',
