@@ -8,6 +8,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Anjas Welt">
   <meta name="description" content="Anjas Druck-Profil und Anjas Rangierwerk in einer App.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="../app-icon-192.png">
   <title>Anjas Welt · Hansi's World</title>
   <style>
     :root {
@@ -28,13 +31,13 @@
     .grid{width:min(1100px,100%);margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
     .portal{position:relative;min-height:360px;display:flex;flex-direction:column;justify-content:space-between;gap:30px;padding:clamp(24px,4vw,42px);overflow:hidden;border:1px solid rgba(245,232,202,.13);border-radius:28px;background:linear-gradient(145deg,rgba(25,34,40,.98),rgba(13,18,22,.98));box-shadow:0 28px 80px rgba(0,0,0,.3)}
     .portal:after{content:"";position:absolute;width:220px;height:220px;right:-90px;bottom:-90px;border:1px solid rgba(239,184,63,.15);border-radius:50%}
-    .portal.profile{border-color:rgba(144,184,146,.28)}.portal.game{border-color:rgba(239,184,63,.29)}
+    .portal.profile{border-color:rgba(144,184,146,.28)}.portal.game{border-color:rgba(239,184,63,.29)}.portal.tasks{border-color:rgba(106,155,185,.35)}.portal.today{border-color:rgba(183,103,85,.38)}.portal.extras{border-color:rgba(174,135,194,.35)}.portal.compact{min-height:280px}
     .number{position:absolute;right:26px;top:18px;color:rgba(245,232,202,.11);font-family:Georgia,serif;font-size:74px}
     .portal h2{max-width:420px;margin:8px 0 13px;font-family:Georgia,serif;font-size:clamp(32px,4vw,48px);font-weight:500;line-height:1}
     .portal p:not(.label){max-width:440px;margin:0;color:#aebabc;font-size:16px;line-height:1.55}
     .big-button,.primary,.whatsapp{position:relative;z-index:1;min-height:54px;display:inline-flex;align-items:center;justify-content:center;gap:18px;padding:0 20px;border:0;border-radius:14px;background:var(--amber);color:#171d20;font-weight:900;text-decoration:none;cursor:pointer}
-    .profile .big-button{background:var(--green)}.big-button{justify-content:space-between}.big-button b{font-size:24px}
-    .install{width:min(1100px,100%);margin:18px auto 0;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 20px;border:1px dashed rgba(245,232,202,.2);border-radius:16px;color:var(--muted)}.install strong{color:var(--cream)}
+    .profile .big-button{background:var(--green)}.tasks .big-button{background:#83acc2}.today .big-button{background:#c98570}.extras .big-button{background:#b99ac9}.big-button{justify-content:space-between}.big-button b{font-size:24px}
+    .install{width:min(1100px,100%);margin:18px auto 0;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 20px;border:1px dashed rgba(245,232,202,.2);border-radius:16px;color:var(--muted)}.install strong{display:block;color:var(--cream);margin-bottom:3px}.install-button{min-height:46px;flex:0 0 auto;padding:0 16px;border:1px solid rgba(239,184,63,.45);border-radius:12px;background:rgba(239,184,63,.1);color:var(--amber2);font-weight:900;cursor:pointer}.install.ok{border-style:solid;border-color:rgba(144,184,146,.3)}.install.ok .install-button{display:none}
     footer{width:min(1100px,100%);margin:38px auto 0;color:#657377;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
     .profile-shell{min-height:100svh;padding:18px clamp(16px,4vw,42px) 40px;background:radial-gradient(circle at 50% 0,rgba(144,184,146,.1),transparent 30%),var(--ink)}
     .nav{width:min(860px,100%);min-height:52px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;color:#7f9094;font-size:11px;font-weight:900;letter-spacing:.15em}.nav button,.text-action{border:0;background:transparent;color:var(--cream);font-weight:800;cursor:pointer}
@@ -45,7 +48,7 @@
     textarea{width:100%;margin-top:26px;resize:vertical;padding:18px;border:1px solid #38474c;border-radius:16px;outline:0;background:#0d1417;color:var(--cream);font-size:17px;line-height:1.5}textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(144,184,146,.1)}
     .actions{display:flex;justify-content:space-between;gap:12px;margin-top:30px}.back{min-height:52px;padding:0 18px;border:0;background:transparent;color:var(--muted);font-weight:800;cursor:pointer}.back:disabled{opacity:.25}.primary{min-width:150px}.primary:disabled{opacity:.3;cursor:default}
     .result-card{width:min(900px,100%)}.result-card pre{max-height:48vh;margin:28px 0;overflow:auto;white-space:pre-wrap;padding:22px;border:1px solid #2a373c;border-radius:16px;background:#0d1316;color:#cbd5d5;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.55}.result-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}.whatsapp{background:#79c58b}.text-action{display:block;margin:22px auto 0;color:var(--muted)}
-    .game-view{height:100svh;display:none;grid-template-rows:54px 1fr;overflow:hidden;background:#030a0f}.game-view.active{display:grid}.game-view .nav{width:100%;padding:0 16px;background:#10171a;border-bottom:1px solid rgba(239,184,63,.2)}.game-view .nav button{color:var(--amber2)}.game-wrap{position:relative;min-height:0}.game-wrap iframe{width:100%;height:100%;border:0;background:#030a0f}.game-direct{position:absolute;right:12px;top:10px;z-index:2;padding:8px 11px;border:1px solid rgba(239,184,63,.4);border-radius:10px;background:rgba(9,13,16,.86);color:var(--amber2);font-size:11px;font-weight:900;text-decoration:none}
+    .tool-shell{min-height:100svh;padding:18px clamp(16px,4vw,42px) 50px;background:radial-gradient(circle at 50% 0,rgba(239,184,63,.08),transparent 30%),var(--ink)}.tool-card{width:min(780px,100%);margin:30px auto 0;padding:clamp(22px,5vw,46px);border:1px solid rgba(245,232,202,.13);border-radius:26px;background:var(--panel)}.tool-card h1{margin:8px 0 10px;font-family:Georgia,serif;font-size:clamp(38px,7vw,66px);font-weight:500;line-height:1}.tool-lead{margin:0 0 24px;color:var(--muted);line-height:1.5}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:18px 0}.tab{min-height:45px;border:1px solid #344249;border-radius:11px;background:#0e1518;color:#aebabc;font-weight:850;cursor:pointer}.tab.active{border-color:var(--amber);background:rgba(239,184,63,.12);color:var(--cream)}.task-form,.note-form{display:grid;grid-template-columns:1fr auto;gap:9px}.task-form input,.note-form input{min-width:0;padding:14px 15px;border:1px solid #38474c;border-radius:12px;outline:0;background:#0d1417;color:var(--cream);font:inherit}.task-form button,.note-form button{padding:0 17px;border:0;border-radius:12px;background:var(--amber);color:#171d20;font-weight:900}.task-list,.note-list{display:grid;gap:9px;margin-top:18px}.empty{padding:24px;border:1px dashed #334249;border-radius:14px;color:#718287;text-align:center}.task-item,.note-item{padding:14px;border:1px solid #2c393e;border-radius:13px;background:#0e1518}.task-text{font-weight:750;line-height:1.35}.task-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}.mini{min-height:34px;padding:0 10px;border:1px solid #3a494e;border-radius:9px;background:#151e22;color:#aebabc;font-size:12px;font-weight:800;cursor:pointer}.mini.done{border-color:rgba(144,184,146,.5);color:#bfe0c0}.mini.delete{margin-left:auto;color:#c68b86}.today-card{text-align:center}.today-date{color:var(--amber);font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.counter-label{margin:25px 0 4px;color:var(--muted);font-weight:800}.counter{font-family:Georgia,serif;font-size:clamp(84px,24vw,160px);line-height:.9}.counter-button{width:min(310px,100%);aspect-ratio:1.55;margin:28px auto 16px;border:1px solid rgba(239,184,63,.45);border-radius:38px;background:radial-gradient(circle at 50% 35%,#ffd765,#b87917 68%,#603d0d);box-shadow:0 24px 70px rgba(0,0,0,.4),inset 0 2px rgba(255,255,255,.45);font-size:74px;cursor:pointer}.counter-button:active{transform:scale(.97)}.counter-tools{display:flex;justify-content:center;gap:8px}.branch-grid{display:grid;gap:10px}.branch{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:92px;padding:18px;border:1px solid #344249;border-radius:15px;background:#0e1518;color:var(--cream);text-align:left;cursor:pointer}.branch strong{display:block;font-family:Georgia,serif;font-size:24px;font-weight:500}.branch span{display:block;margin-top:4px;color:var(--muted);font-size:13px}.branch b{color:var(--amber);font-size:25px}.note-item{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.note-item span{white-space:pre-wrap}.game-view{height:100svh;display:none;overflow:hidden;background:#030a0f}.game-view.active{display:block}.game-wrap{position:relative;width:100%;height:100%}.game-wrap iframe{width:100%;height:100%;border:0;background:#030a0f}.game-home,.game-full{position:absolute;z-index:4;top:max(8px,env(safe-area-inset-top));display:grid;width:40px;height:40px;place-items:center;border:1px solid rgba(239,184,63,.4);border-radius:12px;background:rgba(4,12,17,.84);color:var(--amber2);font-size:22px;font-weight:900;backdrop-filter:blur(10px)}.game-home{left:max(8px,env(safe-area-inset-left))}.game-full{right:max(8px,env(safe-area-inset-right))}.install-sheet{position:fixed;z-index:100;inset:0;display:none;place-items:end center;padding:18px;background:rgba(0,0,0,.68);backdrop-filter:blur(9px)}.install-sheet.open{display:grid}.sheet-card{width:min(520px,100%);padding:25px;border:1px solid rgba(239,184,63,.35);border-radius:24px;background:#131a1e;box-shadow:0 28px 90px rgba(0,0,0,.55)}.sheet-card h2{margin:0 0 10px;font-family:Georgia,serif;font-size:34px;font-weight:500}.sheet-card p{color:#b8c3c4;line-height:1.5}.sheet-step{margin:10px 0;padding:13px;border-radius:12px;background:#0d1417;font-weight:800}.sheet-close{width:100%;min-height:49px;margin-top:8px;border:0;border-radius:12px;background:var(--amber);color:#171d20;font-weight:900}
     @media(max-width:720px){.shell{padding:18px 14px 34px}.hero{margin-bottom:28px;padding:15px 6px 0}.mark{width:54px;height:54px;font-size:13px}.kicker{margin-top:34px}.grid{grid-template-columns:1fr}.portal{min-height:310px;border-radius:22px}.install{align-items:flex-start;flex-direction:column}.nav span{font-size:9px;letter-spacing:.1em}.card{margin-top:28px;border-radius:22px}.result-actions{grid-template-columns:1fr}.actions{position:sticky;bottom:8px;padding:8px;border-radius:16px;background:rgba(9,13,16,.9);backdrop-filter:blur(12px)}}
     @media(prefers-reduced-motion:reduce){*{transition:none!important}}
   </style>
@@ -60,8 +63,11 @@
     <section class="grid">
       <article class="portal profile"><span class="number">01</span><div><p class="label">3D-DRUCK</p><h2>Anjas Druck-Profil</h2><p>12 kurze Fragen. Am Ende steht dein Profil fertig zum Kopieren oder Teilen.</p></div><button class="big-button" data-go="profile">Profil starten <b>→</b></button></article>
       <article class="portal game"><span class="number">02</span><div><p class="label">WEB ARCADE</p><h2>Anjas Rangierwerk</h2><p>Farbe. Gleis. Tempo. Zwei Züge – später drei, vier und fünf.</p></div><button class="big-button" data-go="game">Werk öffnen <b>→</b></button></article>
+      <article class="portal compact tasks"><span class="number">03</span><div><p class="label">KLEINE SCHALTZENTRALE</p><h2>Fertig machen</h2><p>Jetzt · Erledigt · Später. Mehr braucht eine gute Liste nicht.</p></div><button class="big-button" data-go="tasks">Liste öffnen <b>→</b></button></article>
+      <article class="portal compact today"><span class="number">04</span><div><p class="label">NUR FÜR DICH</p><h2>Heute</h2><p>Der private Schnaps‑Knopf. Ein Klick. Keine Predigt.</p></div><button class="big-button" data-go="today">Heute öffnen <b>→</b></button></article>
+      <article class="portal compact extras"><span class="number">05</span><div><p class="label">DEINE ZWEIGE</p><h2>Mehr für Anja</h2><p>Haare & Handwerk · Papierkram & Amt · Klamotten & Stil.</p></div><button class="big-button" data-go="extras">Zweige öffnen <b>→</b></button></article>
     </section>
-    <aside class="install"><strong>Wie eine App benutzen</strong><span>Auf dem iPhone: Teilen-Symbol → „Zum Home-Bildschirm“.</span></aside>
+    <aside class="install" id="install-banner"><div><strong id="install-title">Ohne Browserleisten spielen</strong><span id="install-copy">Einmal auf den Home‑Bildschirm legen – danach startet Anjas Welt wie eine App.</span></div><button class="install-button" id="install-help">App‑Modus öffnen</button></aside>
     <footer>Hansi’s World · Für Anja gebaut, nicht von der Stange.</footer>
   </main>
 
@@ -80,10 +86,31 @@
     <section class="card result-card"><p class="result-top">12 Antworten · eine klare Richtung</p><h1>Dein Druck-Profil steht.</h1><pre id="summary"></pre><div class="result-actions"><button class="primary" id="copy">Ergebnis kopieren</button><a class="whatsapp" id="whatsapp" target="_blank" rel="noreferrer">Über WhatsApp teilen</a></div><button class="text-action" id="restart">Antworten noch einmal ansehen</button></section>
   </main>
 
-  <main id="game" class="view game-view">
-    <nav class="nav"><button data-go="home">← Anjas Welt</button><span>ANJAS RANGIERWERK</span></nav>
-    <div class="game-wrap"><a class="game-direct" href="../" target="_blank">Direkt öffnen ↗</a><iframe id="game-frame" title="Anjas Rangierwerk" allow="fullscreen; autoplay"></iframe></div>
+  <main id="tasks" class="view tool-shell">
+    <nav class="nav"><button data-go="home">← Anjas Welt</button><span>FERTIG MACHEN</span></nav>
+    <section class="tool-card"><p class="label">KLEINE SCHALTZENTRALE</p><h1>Fertig machen</h1><p class="tool-lead">Jetzt · Erledigt · Später. Ohne Verwaltungszirkus.</p><div class="tabs"><button class="tab active" data-task-tab="now">Jetzt</button><button class="tab" data-task-tab="done">Erledigt</button><button class="tab" data-task-tab="later">Später</button></div><form class="task-form" id="task-form"><input id="task-input" maxlength="120" placeholder="Was soll rein?" autocomplete="off"><button>Hinzufügen</button></form><div class="task-list" id="task-list"></div></section>
   </main>
+
+  <main id="today" class="view tool-shell">
+    <nav class="nav"><button data-go="home">← Anjas Welt</button><span>HEUTE</span></nav>
+    <section class="tool-card today-card"><p class="today-date" id="today-date"></p><h1>Heute</h1><p class="counter-label">Schnaps heute</p><div class="counter" id="drink-count">0</div><button class="counter-button" id="drink-plus" aria-label="Einen hinzufügen">🍺</button><p class="tool-lead">Antippen, wenn einer dazukommt. Das war’s.</p><div class="counter-tools"><button class="mini" id="drink-minus">Einer weniger</button><button class="mini delete" id="drink-reset">Für heute nullen</button></div></section>
+  </main>
+
+  <main id="extras" class="view tool-shell">
+    <nav class="nav"><button data-go="home">← Anjas Welt</button><span>MEHR FÜR ANJA</span></nav>
+    <section class="tool-card"><p class="label">DEINE ZWEIGE</p><h1>Mehr für Anja</h1><p class="tool-lead">Drei kleine Bereiche. Alles bleibt nur auf diesem Handy.</p><div class="branch-grid"><button class="branch" data-branch="hair"><span><strong>Haare & Handwerk</strong><span>Ideen, Selbstcheck und Dinge zum Ausprobieren.</span></span><b>→</b></button><button class="branch" data-branch="paper"><span><strong>Papierkram & Amt</strong><span>Bescheide, Fristen und Sachen, die weg müssen.</span></span><b>→</b></button><button class="branch" data-branch="style"><span><strong>Klamotten & Stil</strong><span>Stilideen und persönliche Merkliste.</span></span><b>→</b></button></div></section>
+  </main>
+
+  <main id="notebook" class="view tool-shell">
+    <nav class="nav"><button data-go="extras">← Zweige</button><span id="branch-label">ANJAS ZWEIG</span></nav>
+    <section class="tool-card"><p class="label">MERKLISTE</p><h1 id="branch-title">Anjas Zweig</h1><p class="tool-lead" id="branch-copy"></p><form class="note-form" id="note-form"><input id="note-input" maxlength="180" placeholder="Kurz merken …" autocomplete="off"><button>Merken</button></form><div class="note-list" id="note-list"></div></section>
+  </main>
+
+  <main id="game" class="view game-view">
+    <div class="game-wrap"><button class="game-home" data-go="home" aria-label="Zurück zu Anjas Welt">‹</button><button class="game-full" id="game-full" aria-label="Vollbild">⛶</button><iframe id="game-frame" title="Anjas Rangierwerk" allow="fullscreen; autoplay"></iframe></div>
+  </main>
+
+  <section class="install-sheet" id="install-sheet" aria-modal="true" role="dialog"><div class="sheet-card"><h2>Ohne Browserleisten</h2><p>Apple erlaubt einer Internetseite nicht, Safari selbst wegzuzaubern. Einmal als App ablegen – danach ist oben und unten Ruhe.</p><div class="sheet-step">1. Unten auf <strong>Teilen</strong> tippen.</div><div class="sheet-step">2. <strong>„Zum Home‑Bildschirm“</strong> wählen.</div><div class="sheet-step">3. Danach nur noch das neue <strong>Anjas‑Welt‑Symbol</strong> öffnen.</div><button class="sheet-close" id="install-close">Verstanden</button></div></section>
 
   <script>
   (()=>{
@@ -102,12 +129,38 @@
       {id:'role',title:'Deine mögliche Rolle bei Hansi’s World / 3D-Druck',hint:'Mehrere Antworten möglich',type:'multi',options:['Ideen geben','Prototypen testen','Farben und Aussehen wählen','Ehrlich sagen, was nicht funktioniert','Gemeinsam etwas entwickeln','Nur Spaß daran haben']},
       {id:'note',title:'Was sollen wir unbedingt beachten?',hint:'Optional: Wunsch, No-Go oder etwas ganz anderes.',type:'text'}
     ];
-    let step=0; let answers={};
-    try{const stored=JSON.parse(localStorage.getItem('anjasDruckProfil')||'null');if(stored&&typeof stored==='object')answers=stored}catch(_){}
     const $=id=>document.getElementById(id);
+    function load(key,fallback){try{const value=JSON.parse(localStorage.getItem(key)||'null');return value===null?fallback:value}catch(_){return fallback}}
+    function save(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(_){}}
+    function dayKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+    let step=0;
+    let answers=load('anjasDruckProfil',{});
+    let tasks=load('anjasTasks',[]);
+    let taskTab='now';
+    let drinks=load('anjasHeute',{date:dayKey(),count:0});
+    let notes=load('anjasNotizen',{hair:[],paper:[],style:[]});
+    let activeBranch='hair';
+    let installPrompt=null;
+    const branchMeta={
+      hair:{title:'Haare & Handwerk',label:'HAARE & HANDWERK',copy:'Ideen, Selbstcheck und Dinge zum Ausprobieren.'},
+      paper:{title:'Papierkram & Amt',label:'PAPIERKRAM & AMT',copy:'Bescheide, Fristen und Sachen, die weg müssen.'},
+      style:{title:'Klamotten & Stil',label:'KLAMOTTEN & STIL',copy:'Stilideen und persönliche Merkliste.'}
+    };
     function persist(){try{localStorage.setItem('anjasDruckProfil',JSON.stringify(answers))}catch(_){}}
-    function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));window.scrollTo(0,0);if(id==='profile')render();if(id==='game'&&!$('game-frame').src)$('game-frame').src='../';}
-    document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
+    function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
+    function show(id){
+      document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));
+      document.body.style.overflow=id==='game'?'hidden':'';
+      if(id!=='game'&&document.fullscreenElement)document.exitFullscreen?.().catch(()=>{});
+      window.scrollTo(0,0);
+      if(id==='profile')render();
+      if(id==='tasks')renderTasks();
+      if(id==='today')renderToday();
+      if(id==='notebook')renderNotes();
+      if(id==='game'&&!$('game-frame').src)$('game-frame').src='../';
+    }
+    function enterGame(){show('game');if(!isStandalone()&&$('game').requestFullscreen)$('game').requestFullscreen().catch(()=>{})}
+    document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>b.dataset.go==='game'?enterGame():show(b.dataset.go)));
     function choose(value){const q=questions[step],old=answers[q.id]||[];answers[q.id]=q.type==='multi'?(old.includes(value)?old.filter(v=>v!==value):[...old,value]):[value];persist();render();}
     function render(){
       const q=questions[step],selected=answers[q.id]||[],n=String(step+1).padStart(2,'0');
@@ -123,6 +176,51 @@
     function finish(){const summary=makeSummary();$('summary').textContent=summary;$('whatsapp').href=`https://wa.me/?text=${encodeURIComponent(summary)}`;show('result')}
     $('copy').addEventListener('click',async()=>{const text=makeSummary();try{await navigator.clipboard.writeText(text)}catch(_){const t=document.createElement('textarea');t.value=text;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}$('copy').textContent='Kopiert ✓'});
     $('restart').addEventListener('click',()=>{step=0;show('profile')});
+    function renderTasks(){
+      document.querySelectorAll('[data-task-tab]').forEach(b=>b.classList.toggle('active',b.dataset.taskTab===taskTab));
+      const list=$('task-list');list.innerHTML='';
+      const visible=tasks.filter(task=>task.state===taskTab);
+      if(!visible.length){const empty=document.createElement('div');empty.className='empty';empty.textContent=taskTab==='now'?'Hier ist gerade nichts. Sehr verdächtig gut.':taskTab==='done'?'Noch nichts abgehakt.':'Später ist momentan leer.';list.appendChild(empty);return}
+      visible.forEach(task=>{
+        const item=document.createElement('article');item.className='task-item';
+        const text=document.createElement('div');text.className='task-text';text.textContent=task.text;item.appendChild(text);
+        const actions=document.createElement('div');actions.className='task-actions';
+        [['now','Jetzt'],['later','Später'],['done','Erledigt']].filter(([state])=>state!==task.state).forEach(([state,label])=>{const b=document.createElement('button');b.className='mini'+(state==='done'?' done':'');b.textContent=label;b.addEventListener('click',()=>{task.state=state;save('anjasTasks',tasks);renderTasks()});actions.appendChild(b)});
+        const del=document.createElement('button');del.className='mini delete';del.textContent='Löschen';del.addEventListener('click',()=>{tasks=tasks.filter(t=>t.id!==task.id);save('anjasTasks',tasks);renderTasks()});actions.appendChild(del);item.appendChild(actions);list.appendChild(item);
+      });
+    }
+    document.querySelectorAll('[data-task-tab]').forEach(b=>b.addEventListener('click',()=>{taskTab=b.dataset.taskTab;renderTasks()}));
+    $('task-form').addEventListener('submit',event=>{event.preventDefault();const value=$('task-input').value.trim();if(!value)return;tasks.unshift({id:`${Date.now()}-${Math.random().toString(16).slice(2)}`,text:value,state:taskTab==='done'?'now':taskTab});save('anjasTasks',tasks);$('task-input').value='';if(taskTab==='done')taskTab='now';renderTasks()});
+    function renderToday(){
+      if(drinks.date!==dayKey()){drinks={date:dayKey(),count:0};save('anjasHeute',drinks)}
+      $('today-date').textContent=new Intl.DateTimeFormat('de-DE',{weekday:'long',day:'numeric',month:'long'}).format(new Date());
+      $('drink-count').textContent=String(drinks.count);
+    }
+    function changeDrinks(amount){drinks.count=Math.max(0,drinks.count+amount);save('anjasHeute',drinks);renderToday()}
+    $('drink-plus').addEventListener('click',()=>changeDrinks(1));
+    $('drink-minus').addEventListener('click',()=>changeDrinks(-1));
+    $('drink-reset').addEventListener('click',()=>{drinks.count=0;save('anjasHeute',drinks);renderToday()});
+    document.querySelectorAll('[data-branch]').forEach(b=>b.addEventListener('click',()=>{activeBranch=b.dataset.branch;show('notebook')}));
+    function renderNotes(){
+      const meta=branchMeta[activeBranch];$('branch-title').textContent=meta.title;$('branch-label').textContent=meta.label;$('branch-copy').textContent=meta.copy;
+      const list=$('note-list');list.innerHTML='';const current=notes[activeBranch]||[];
+      if(!current.length){const empty=document.createElement('div');empty.className='empty';empty.textContent='Noch nichts gemerkt.';list.appendChild(empty);return}
+      current.forEach(note=>{const item=document.createElement('article');item.className='note-item';const text=document.createElement('span');text.textContent=note.text;const del=document.createElement('button');del.className='mini delete';del.textContent='Löschen';del.addEventListener('click',()=>{notes[activeBranch]=(notes[activeBranch]||[]).filter(n=>n.id!==note.id);save('anjasNotizen',notes);renderNotes()});item.append(text,del);list.appendChild(item)});
+    }
+    $('note-form').addEventListener('submit',event=>{event.preventDefault();const value=$('note-input').value.trim();if(!value)return;notes[activeBranch]=notes[activeBranch]||[];notes[activeBranch].unshift({id:`${Date.now()}-${Math.random().toString(16).slice(2)}`,text:value});save('anjasNotizen',notes);$('note-input').value='';renderNotes()});
+    function updateInstallUI(){
+      const banner=$('install-banner');
+      if(isStandalone()){banner.classList.add('ok');$('install-title').textContent='App‑Modus aktiv';$('install-copy').textContent='Anjas Welt läuft ohne Browserleisten.'}
+      else{banner.classList.remove('ok');$('install-title').textContent='Ohne Browserleisten spielen';$('install-copy').textContent='Einmal auf den Home‑Bildschirm legen – danach startet Anjas Welt wie eine App.'}
+    }
+    $('install-help').addEventListener('click',async()=>{if(installPrompt){installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;updateInstallUI()}else $('install-sheet').classList.add('open')});
+    $('install-close').addEventListener('click',()=>$('install-sheet').classList.remove('open'));
+    $('install-sheet').addEventListener('click',event=>{if(event.target===$('install-sheet'))$('install-sheet').classList.remove('open')});
+    window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event});
+    window.addEventListener('appinstalled',updateInstallUI);
+    $('game-full').addEventListener('click',()=>{const target=$('game');if(!document.fullscreenElement)target.requestFullscreen?.().catch(()=>{});else document.exitFullscreen?.().catch(()=>{})});
+    if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+    updateInstallUI();
     render();
   })();
   </script>
