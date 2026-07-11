@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090d10">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Anjas Welt">
+  <meta name="description" content="Anjas Druck-Profil und Anjas Rangierwerk in einer App.">
+  <title>Anjas Welt · Hansi's World</title>
+  <style>
+    :root {
+      --ink:#090d10; --panel:#131a1e; --soft:#192228; --cream:#f5e8ca;
+      --muted:#9babae; --amber:#efb83f; --amber2:#ffd765; --green:#90b892;
+    }
+    *{box-sizing:border-box} html,body{min-height:100%;margin:0}
+    body{background:var(--ink);color:var(--cream);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,textarea{font:inherit} button{-webkit-tap-highlight-color:transparent}
+    .view{display:none}.view.active{display:block}
+    .shell{min-height:100svh;padding:clamp(22px,5vw,64px);background:radial-gradient(circle at 50% 5%,rgba(239,184,63,.12),transparent 28%),linear-gradient(135deg,rgba(113,55,67,.11),transparent 42%),#090d10}
+    .hero{position:relative;width:min(1100px,100%);margin:0 auto 42px;padding-top:26px}
+    .eyebrow,.label,.count,.result-top{color:var(--amber);font-size:11px;font-weight:900;letter-spacing:.22em;text-transform:uppercase}
+    .mark{position:absolute;right:0;top:0;display:grid;width:70px;height:70px;place-items:center;border:1px solid rgba(239,184,63,.45);border-radius:50%;color:var(--amber);font-weight:950;letter-spacing:.06em;box-shadow:inset 0 0 0 8px rgba(239,184,63,.035)}
+    .kicker{margin:44px 0 5px;color:var(--muted);font-size:15px;font-weight:700}
+    .hero h1{margin:0;max-width:780px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(56px,12vw,126px);font-weight:500;letter-spacing:-.055em;line-height:.87}
+    .lead{max-width:650px;margin:26px 0 0;color:#c2cccd;font-size:clamp(17px,2.4vw,24px);line-height:1.45}
+    .grid{width:min(1100px,100%);margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+    .portal{position:relative;min-height:360px;display:flex;flex-direction:column;justify-content:space-between;gap:30px;padding:clamp(24px,4vw,42px);overflow:hidden;border:1px solid rgba(245,232,202,.13);border-radius:28px;background:linear-gradient(145deg,rgba(25,34,40,.98),rgba(13,18,22,.98));box-shadow:0 28px 80px rgba(0,0,0,.3)}
+    .portal:after{content:"";position:absolute;width:220px;height:220px;right:-90px;bottom:-90px;border:1px solid rgba(239,184,63,.15);border-radius:50%}
+    .portal.profile{border-color:rgba(144,184,146,.28)}.portal.game{border-color:rgba(239,184,63,.29)}
+    .number{position:absolute;right:26px;top:18px;color:rgba(245,232,202,.11);font-family:Georgia,serif;font-size:74px}
+    .portal h2{max-width:420px;margin:8px 0 13px;font-family:Georgia,serif;font-size:clamp(32px,4vw,48px);font-weight:500;line-height:1}
+    .portal p:not(.label){max-width:440px;margin:0;color:#aebabc;font-size:16px;line-height:1.55}
+    .big-button,.primary,.whatsapp{position:relative;z-index:1;min-height:54px;display:inline-flex;align-items:center;justify-content:center;gap:18px;padding:0 20px;border:0;border-radius:14px;background:var(--amber);color:#171d20;font-weight:900;text-decoration:none;cursor:pointer}
+    .profile .big-button{background:var(--green)}.big-button{justify-content:space-between}.big-button b{font-size:24px}
+    .install{width:min(1100px,100%);margin:18px auto 0;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 20px;border:1px dashed rgba(245,232,202,.2);border-radius:16px;color:var(--muted)}.install strong{color:var(--cream)}
+    footer{width:min(1100px,100%);margin:38px auto 0;color:#657377;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+    .profile-shell{min-height:100svh;padding:18px clamp(16px,4vw,42px) 40px;background:radial-gradient(circle at 50% 0,rgba(144,184,146,.1),transparent 30%),var(--ink)}
+    .nav{width:min(860px,100%);min-height:52px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;color:#7f9094;font-size:11px;font-weight:900;letter-spacing:.15em}.nav button,.text-action{border:0;background:transparent;color:var(--cream);font-weight:800;cursor:pointer}
+    .progress{width:min(860px,100%);height:4px;margin:2px auto 0;overflow:hidden;border-radius:99px;background:#20292d}.progress span{display:block;height:100%;border-radius:inherit;background:var(--green);transition:width .25s ease}
+    .card{width:min(760px,100%);margin:clamp(34px,7vh,74px) auto 0;padding:clamp(24px,5vw,54px);border:1px solid rgba(245,232,202,.12);border-radius:28px;background:rgba(19,26,30,.93);box-shadow:0 28px 100px rgba(0,0,0,.34)}
+    .card h1{margin:10px 0 8px;font-family:Georgia,serif;font-size:clamp(34px,6vw,58px);font-weight:500;line-height:1.03;letter-spacing:-.03em}.hint{margin:0 0 25px;color:var(--muted);font-size:14px}
+    .options{display:grid;gap:10px;margin-top:28px}.option{min-height:58px;display:flex;align-items:center;gap:14px;padding:10px 16px;border:1px solid #2e3a3f;border-radius:15px;background:#10171a;color:#dce3df;text-align:left;cursor:pointer}.option.active{border-color:var(--green);background:rgba(144,184,146,.11);color:#f3f2e7}.option-mark{flex:0 0 28px;display:grid;width:28px;height:28px;place-items:center;border:1px solid #506166;border-radius:8px;color:var(--green);font-weight:950}.option.active .option-mark{border-color:var(--green);background:var(--green);color:#132019}
+    textarea{width:100%;margin-top:26px;resize:vertical;padding:18px;border:1px solid #38474c;border-radius:16px;outline:0;background:#0d1417;color:var(--cream);font-size:17px;line-height:1.5}textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(144,184,146,.1)}
+    .actions{display:flex;justify-content:space-between;gap:12px;margin-top:30px}.back{min-height:52px;padding:0 18px;border:0;background:transparent;color:var(--muted);font-weight:800;cursor:pointer}.back:disabled{opacity:.25}.primary{min-width:150px}.primary:disabled{opacity:.3;cursor:default}
+    .result-card{width:min(900px,100%)}.result-card pre{max-height:48vh;margin:28px 0;overflow:auto;white-space:pre-wrap;padding:22px;border:1px solid #2a373c;border-radius:16px;background:#0d1316;color:#cbd5d5;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.55}.result-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}.whatsapp{background:#79c58b}.text-action{display:block;margin:22px auto 0;color:var(--muted)}
+    .game-view{height:100svh;display:none;grid-template-rows:54px 1fr;overflow:hidden;background:#030a0f}.game-view.active{display:grid}.game-view .nav{width:100%;padding:0 16px;background:#10171a;border-bottom:1px solid rgba(239,184,63,.2)}.game-view .nav button{color:var(--amber2)}.game-wrap{position:relative;min-height:0}.game-wrap iframe{width:100%;height:100%;border:0;background:#030a0f}.game-direct{position:absolute;right:12px;top:10px;z-index:2;padding:8px 11px;border:1px solid rgba(239,184,63,.4);border-radius:10px;background:rgba(9,13,16,.86);color:var(--amber2);font-size:11px;font-weight:900;text-decoration:none}
+    @media(max-width:720px){.shell{padding:18px 14px 34px}.hero{margin-bottom:28px;padding:15px 6px 0}.mark{width:54px;height:54px;font-size:13px}.kicker{margin-top:34px}.grid{grid-template-columns:1fr}.portal{min-height:310px;border-radius:22px}.install{align-items:flex-start;flex-direction:column}.nav span{font-size:9px;letter-spacing:.1em}.card{margin-top:28px;border-radius:22px}.result-actions{grid-template-columns:1fr}.actions{position:sticky;bottom:8px;padding:8px;border-radius:16px;background:rgba(9,13,16,.9);backdrop-filter:blur(12px)}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <main id="home" class="view active shell">
+    <header class="hero">
+      <div class="eyebrow">HANSI’S WORLD · WERKSTATT 01</div><div class="mark">HW</div>
+      <p class="kicker">Für Anja</p><h1>Anjas Welt</h1>
+      <p class="lead">Zwei echte Sachen. Ein Link. Erst auswählen – dann eine Runde rangieren.</p>
+    </header>
+    <section class="grid">
+      <article class="portal profile"><span class="number">01</span><div><p class="label">3D-DRUCK</p><h2>Anjas Druck-Profil</h2><p>12 kurze Fragen. Am Ende steht dein Profil fertig zum Kopieren oder Teilen.</p></div><button class="big-button" data-go="profile">Profil starten <b>→</b></button></article>
+      <article class="portal game"><span class="number">02</span><div><p class="label">WEB ARCADE</p><h2>Anjas Rangierwerk</h2><p>Farbe. Gleis. Tempo. Zwei Züge – später drei, vier und fünf.</p></div><button class="big-button" data-go="game">Werk öffnen <b>→</b></button></article>
+    </section>
+    <aside class="install"><strong>Wie eine App benutzen</strong><span>Auf dem iPhone: Teilen-Symbol → „Zum Home-Bildschirm“.</span></aside>
+    <footer>Hansi’s World · Für Anja gebaut, nicht von der Stange.</footer>
+  </main>
+
+  <main id="profile" class="view profile-shell">
+    <nav class="nav"><button data-go="home">← Anjas Welt</button><span id="step-label">DRUCK-PROFIL · 01/12</span></nav>
+    <div class="progress"><span id="bar" style="width:8.333%"></span></div>
+    <section class="card">
+      <p class="count" id="count">FRAGE 01</p><h1 id="question"></h1><p class="hint" id="hint"></p>
+      <div id="input"></div>
+      <div class="actions"><button class="back" id="back" disabled>Zurück</button><button class="primary" id="next" disabled>Weiter</button></div>
+    </section>
+  </main>
+
+  <main id="result" class="view profile-shell">
+    <nav class="nav"><button data-go="home">← Anjas Welt</button><span>DRUCK-PROFIL · FERTIG</span></nav>
+    <section class="card result-card"><p class="result-top">12 Antworten · eine klare Richtung</p><h1>Dein Druck-Profil steht.</h1><pre id="summary"></pre><div class="result-actions"><button class="primary" id="copy">Ergebnis kopieren</button><a class="whatsapp" id="whatsapp" target="_blank" rel="noreferrer">Über WhatsApp teilen</a></div><button class="text-action" id="restart">Antworten noch einmal ansehen</button></section>
+  </main>
+
+  <main id="game" class="view game-view">
+    <nav class="nav"><button data-go="home">← Anjas Welt</button><span>ANJAS RANGIERWERK</span></nav>
+    <div class="game-wrap"><a class="game-direct" href="../" target="_blank">Direkt öffnen ↗</a><iframe id="game-frame" title="Anjas Rangierwerk" allow="fullscreen; autoplay"></iframe></div>
+  </main>
+
+  <script>
+  (()=>{
+    'use strict';
+    const questions=[
+      {id:'first',title:'Was soll als Erstes entstehen?',type:'single',options:['Etwas Nützliches für den Alltag','Ein persönliches Geschenk','Etwas Schönes oder Dekoratives','Etwas Lustiges zum Ausprobieren','Überrasch mich einfach']},
+      {id:'forWhom',title:'Für wen ist der erste Druck?',type:'single',options:['Für mich','Für die Familie','Für ein Kind','Für Freunde','Als Hansi’s-World-Test']},
+      {id:'place',title:'Wo soll das Teil benutzt werden?',type:'single',options:['Zu Hause','Im Auto oder Camper','Draußen','In der Werkstatt','Unterwegs']},
+      {id:'size',title:'Wie groß darf es ungefähr werden?',type:'single',options:['Schlüsselanhänger-klein','Handgroß','Etwa wie eine Brotdose','Darf größer werden','Ist mir egal']},
+      {id:'colors',title:'Welche Farben passen zu dir?',hint:'Mehrere Antworten möglich',type:'multi',options:['Schwarz / Anthrazit','Creme / Weiß','Rot / Pink','Blau / Türkis','Grün','Regenbogen','Überraschung']},
+      {id:'style',title:'Welcher Stil gefällt dir?',type:'single',options:['Klar und schlicht','Bunt und verspielt','Technisch und werkstattmäßig','Elegant','Typisch Hansi’s World']},
+      {id:'annoying',title:'Was nervt dich an typischen Produkten?',hint:'Mehrere Antworten möglich',type:'multi',options:['Sie gehen schnell kaputt','Sie sind umständlich','Sie sehen billig aus','Sie sind unnötig teuer','Sie haben keine Persönlichkeit','Sie können zu wenig']},
+      {id:'function',title:'Was soll das Teil können?',hint:'Mehrere Antworten möglich',type:'multi',options:['Ordnen oder aufbewahren','Halten oder schützen','Sich befestigen lassen','Sich bewegen, drehen oder klicken','Einen Namen oder Text tragen','Einfach Freude machen']},
+      {id:'idea',title:'Hast du schon eine konkrete Idee?',hint:'Ein kurzer Satz reicht – oder einfach leer lassen.',type:'text'},
+      {id:'priority',title:'Was ist dir beim ersten Versuch am wichtigsten?',type:'single',options:['Schnell einen Prototyp sehen','Stabil und alltagstauglich','Besonders schön verarbeitet','Clever und ungewöhnlich','Hansi soll entscheiden']},
+      {id:'role',title:'Deine mögliche Rolle bei Hansi’s World / 3D-Druck',hint:'Mehrere Antworten möglich',type:'multi',options:['Ideen geben','Prototypen testen','Farben und Aussehen wählen','Ehrlich sagen, was nicht funktioniert','Gemeinsam etwas entwickeln','Nur Spaß daran haben']},
+      {id:'note',title:'Was sollen wir unbedingt beachten?',hint:'Optional: Wunsch, No-Go oder etwas ganz anderes.',type:'text'}
+    ];
+    let step=0; const answers={};
+    const $=id=>document.getElementById(id);
+    function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));window.scrollTo(0,0);if(id==='profile')render();if(id==='game'&&!$('game-frame').src)$('game-frame').src='../';}
+    document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
+    function choose(value){const q=questions[step],old=answers[q.id]||[];answers[q.id]=q.type==='multi'?(old.includes(value)?old.filter(v=>v!==value):[...old,value]):[value];render();}
+    function render(){
+      const q=questions[step],selected=answers[q.id]||[],n=String(step+1).padStart(2,'0');
+      $('step-label').textContent=`DRUCK-PROFIL · ${n}/${questions.length}`;$('count').textContent=`FRAGE ${n}`;$('question').textContent=q.title;$('hint').textContent=q.hint||'';$('hint').style.display=q.hint?'block':'none';$('bar').style.width=`${((step+1)/questions.length)*100}%`;
+      const box=$('input');box.innerHTML='';
+      if(q.type==='text'){const t=document.createElement('textarea');t.rows=5;t.placeholder='Hier kurz eintippen …';t.value=selected[0]||'';t.addEventListener('input',()=>answers[q.id]=[t.value]);box.appendChild(t);}
+      else{const list=document.createElement('div');list.className='options';q.options.forEach(value=>{const active=selected.includes(value),b=document.createElement('button');b.className='option'+(active?' active':'');b.type='button';const m=document.createElement('span');m.className='option-mark';m.textContent=active?'✓':q.type==='multi'?'+':'';const s=document.createElement('span');s.textContent=value;b.append(m,s);b.addEventListener('click',()=>choose(value));list.appendChild(b)});box.appendChild(list)}
+      $('back').disabled=step===0;$('next').disabled=q.type!=='text'&&selected.length===0;$('next').textContent=step===questions.length-1?'Profil fertigstellen':'Weiter';
+    }
+    $('back').addEventListener('click',()=>{if(step>0){step--;render();window.scrollTo(0,0)}});
+    $('next').addEventListener('click',()=>{if(step===questions.length-1)finish();else{step++;render();window.scrollTo(0,0)}});
+    function makeSummary(){return `ANJAS DRUCK-PROFIL\nHansi’s World · Werkstatt 01\n\n${questions.map((q,i)=>`${i+1}. ${q.title}\n${(answers[q.id]||[]).filter(Boolean).join(', ')||'Noch offen'}`).join('\n\n')}`;}
+    function finish(){const summary=makeSummary();$('summary').textContent=summary;$('whatsapp').href=`https://wa.me/?text=${encodeURIComponent(summary)}`;show('result')}
+    $('copy').addEventListener('click',async()=>{const text=makeSummary();try{await navigator.clipboard.writeText(text)}catch(_){const t=document.createElement('textarea');t.value=text;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}$('copy').textContent='Kopiert ✓'});
+    $('restart').addEventListener('click',()=>{step=0;show('profile')});
+    render();
+  })();
+  </script>
+</body>
+</html>
