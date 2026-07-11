@@ -151,7 +151,7 @@
     function show(id){
       document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));
       document.body.style.overflow=id==='game'?'hidden':'';
-      if(id!=='game'&&document.fullscreenElement)document.exitFullscreen?.().catch(()=>{});
+      if(id!=='game'&&document.fullscreenElement)document.exitFullscreen?.().catch?.(()=>{});
       window.scrollTo(0,0);
       if(id==='profile')render();
       if(id==='tasks')renderTasks();
@@ -218,7 +218,7 @@
     $('install-sheet').addEventListener('click',event=>{if(event.target===$('install-sheet'))$('install-sheet').classList.remove('open')});
     window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event});
     window.addEventListener('appinstalled',updateInstallUI);
-    $('game-full').addEventListener('click',()=>{const target=$('game');if(!document.fullscreenElement)target.requestFullscreen?.().catch(()=>{});else document.exitFullscreen?.().catch(()=>{})});
+    $('game-full').addEventListener('click',()=>{const target=$('game');if(!document.fullscreenElement)target.requestFullscreen?.().catch?.(()=>{});else document.exitFullscreen?.().catch?.(()=>{})});
     if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
     updateInstallUI();
     render();
